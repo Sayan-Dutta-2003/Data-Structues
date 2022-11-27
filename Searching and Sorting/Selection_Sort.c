@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <malloc.h>
 
-void Swap(int *arr1, int *arr2)
+void swap(int *arr1, int *arr2)
 {
     int temp = *arr1;
     *arr1 = *arr2;
@@ -10,21 +10,19 @@ void Swap(int *arr1, int *arr2)
 
 void selectionSort(int *arr, int size)
 {
-    int min, minIndex;
-    for(int i = 0; i < size; i++)
+    for(int i = 0; i < size - 1; i++)
     {
-        min = arr[i];
+        int min = i;
         for(int j = i + 1; j < size; j++)
         {
-            if(arr[j] < min)
+            if(arr[j] < arr[min])
             {
-                min = arr[j];
-                minIndex = j;
+                min = j;
             }
         }
-        if(arr[i] > min)
+        if(min != i)
         {
-            Swap(&arr[i], &arr[minIndex]);
+            swap(&arr[i], &arr[min]);
         }
     }
 }
@@ -51,14 +49,13 @@ int main()
         scanf("%d", &arr[i]);
     }
 
-    printf("Elemets:\t");
+    printf("Before sorting:\t");
     printArray(arr, size);
     printf("\n");
     selectionSort(arr, size);
-
+    printf("After sorting:\t");
     printArray(arr, size);
 
     return 0;
-
 
 }
