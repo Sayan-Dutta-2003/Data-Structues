@@ -10,11 +10,18 @@ struct Node
 // Printing the elements of the Linked List
 void traversal(struct Node *head)
 {
-    struct Node *ptr = head;
-    while (ptr != NULL)
+    if (head == NULL)
     {
-        printf("Element: %d\n", ptr->data);
-        ptr = ptr->next;
+        printf("Empty List \n");
+    }
+    else
+    {
+        struct Node *ptr = head;
+        while (ptr != NULL)
+        {
+            printf("Element: %d\n", ptr->data);
+            ptr = ptr->next;
+        }
     }
 }
 
@@ -31,11 +38,11 @@ struct Node *createNode(int data)
 // Inserting Node in the Linked List
 struct Node *insertNode(struct Node *head, int data)
 {
-    struct Node *node = createNode(data);
+    struct Node *newNode = createNode(data);
 
     if (head == NULL)
     {
-        head = node;
+        head = newNode;
     }
 
     else
@@ -46,7 +53,8 @@ struct Node *insertNode(struct Node *head, int data)
             p = p->next;
         }
 
-        p->next = node;
+        p->next = newNode;
+        newNode->next = NULL;
     }
 
     return head;
@@ -56,8 +64,24 @@ struct Node *insertNode(struct Node *head, int data)
 struct Node *insertAtBeginning(struct Node *head, int data)
 {
     struct Node *newNode = createNode(data);
-    newNode->next = head;
-    head = newNode;
+
+    if (newNode == NULL)
+    {
+        printf("Heap Memory Exhausted");
+    }
+    else
+    {
+        if (head == NULL)
+        {
+            head = newNode;
+            newNode->next = NULL;
+        }
+        else
+        {
+            newNode->next = head;
+            head = newNode;
+        }
+    }
 
     return head;
 }
@@ -67,33 +91,60 @@ struct Node *insertAtEnd(struct Node *head, int data)
 {
     struct Node *newNode = createNode(data);
     struct Node *ptr = head;
+    struct Node *temp;
 
-    while (ptr->next != NULL)
+    if (newNode == NULL)
     {
-        ptr = ptr->next;
+        printf("Heap Memory Exhausted");
     }
-
-    ptr->next = newNode;
-    newNode->next = NULL;
+    else
+    {
+        if (head == NULL)
+        {
+            head = newNode;
+            newNode->next = NULL;
+        }
+        else
+        {
+            temp = head;
+            while (temp->next != NULL)
+            {
+                temp = temp->next;
+            }
+            temp->next = newNode;
+            newNode->next = NULL;
+        }
+    }
 
     return head;
 }
 
 // Insert node at a given Index of the Linkde List
-struct Node *insertAtIndex(struct Node *head, int data, int index)
+struct Node *insertAtIndex(struct Node *head, int data, int index, int size)
 {
     struct Node *newNode = createNode(data);
     struct Node *ptr = head;
 
-    int i = 0;
-    while (i != index - 1)
+    if (index == 1)
     {
-        ptr = ptr->next;
-        i++;
+        head = insertAtBeginning(head, data);
     }
+    else if (index == size - 1)
+    {
+        head = insertAtEnd(head, data);
+    }
+    else
+    {
+        int i = 0;
+        while (i != index - 1)
+        {
+            ptr = ptr->next;
+            i++;
+        }
 
-    newNode->next = ptr->next;
-    ptr->next = newNode;
+        newNode->next = ptr->next;
+        ptr->next = newNode;
+    }
 
     return head;
 }
@@ -161,7 +212,7 @@ struct Node *deleteByValue(struct Node *head, int value)
     return head;
 }
 
-void deleteEntireLinkedList(struct Node *head)
+struct Node *deleteEntireLinkedList(struct Node *head)
 {
 
     while (head != NULL)
@@ -171,8 +222,9 @@ void deleteEntireLinkedList(struct Node *head)
     }
     if (head == NULL)
         printf("Entire Linked List has been Deleted, no need for traversal!\n");
-}
 
+    return head;
+}
 
 struct Node *swapNodes(struct Node *first, struct Node *second)
 {
@@ -218,7 +270,7 @@ struct Node *linkedListReversal(struct Node *head)
 {
     struct Node *newHead = NULL;
 
-    while(head != NULL)
+    while (head != NULL)
     {
         struct Node *nextNode = head->next;
         head->next = newHead;
@@ -289,22 +341,12 @@ void binarySearch(struct Node *head, int element)
 int main()
 {
     int size;
-    printf("Enter the size of the Linked List\n");
-    scanf("%d", &size);
-
-    // User Input
-    struct Node *head = NULL;
-    printf("Enter %d elements in the linked list\n", size);
-    for (int i = 0; i < size; i++)
-    {
-        int element;
-        scanf("%d", &element);
-        head = insertNode(head, element);
-    }
 
     int choice;
     while (1)
     {
+        printf("\n 0 --> User Input \n");
+
         printf("\n 1 --> Insertion at Beginning \n");
 
         printf("\n 2 --> Insertion at End \n");
@@ -329,7 +371,7 @@ int main()
 
         printf("\n 12 --> Linked List Traversal \n");
 
-        printf("\n 0 --> Exit from the program \n");
+        printf("\n -1 --> Exit from the program \n");
 
         printf("\n");
 
@@ -337,12 +379,32 @@ int main()
 
         switch (choice)
         {
+
+        case 0:
+            printf("Enter the size of the Linked List\n");
+            scanf("%d", &size);
+
+            // User Input
+            struct Node *head = NULL;
+            printf("Enter %d elements in the linked list\n", size);
+            for (int i = 0; i < size; i++)
+            {
+                int element;
+                scanf("%d", &element);
+                head = insertNode(head, element);
+            }
+
+            traversal(head);
+
+            break;
         case 1:
             printf("Insert Element at the beginning\n");
             int beg;
             scanf("%d", &beg);
             head = insertAtBeginning(head, beg);
             size++;
+
+            traversal(head);
 
             break;
 
@@ -353,6 +415,8 @@ int main()
             head = insertAtEnd(head, end);
             size++;
 
+            traversal(head);
+
             break;
 
         case 3:
@@ -362,8 +426,10 @@ int main()
             scanf("%d", &index);
             printf("Value: ");
             scanf("%d", &value);
-            head = insertAtIndex(head, value, index);
+            head = insertAtIndex(head, value, index, size);
             size++;
+
+            traversal(head);
 
             break;
 
@@ -372,12 +438,16 @@ int main()
             head = deleteAtBeginning(head);
             size--;
 
+            traversal(head);
+
             break;
 
         case 5:
             printf("Deletion of Element at the end\n");
             head = deleteAtEnd(head);
             size--;
+
+            traversal(head);
 
             break;
 
@@ -395,6 +465,9 @@ int main()
                 head = deleteAtIndex(head, index1);
                 size--;
             }
+
+            traversal(head);
+
             break;
 
         case 7:
@@ -403,20 +476,29 @@ int main()
             scanf("%d", &value1);
             head = deleteByValue(head, value1);
             size--;
+
+            traversal(head);
+
             break;
 
         case 8:
-            deleteEntireLinkedList(head);
-            exit(1);
+            head = deleteEntireLinkedList(head);
+
+            break;
 
         case 9:
             head = linkedListReversal(head);
-            printf("Reversal Done!...Traverse it again for conformation\n");
+            printf("Reversal Done!\n");
+            
+            traversal(head);
+
             break;
 
         case 10:
             bubbleSort(&head, size);
             printf("Singly Linked List Sorted!\n");
+
+            traversal(head);
 
             break;
 
@@ -433,7 +515,7 @@ int main()
             traversal(head);
             break;
 
-        case 0:
+        case -1:
             printf("Exiting From The Program");
             exit(1);
             break;
