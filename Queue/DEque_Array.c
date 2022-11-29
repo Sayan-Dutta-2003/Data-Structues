@@ -9,7 +9,7 @@ void addFront(int data)
 {
     if((rear + 1) % size == front)
     {
-        printf("Deque is full");3
+        printf("Deque is full");
     }
     else if(front == -1 && rear == -1)
     {
