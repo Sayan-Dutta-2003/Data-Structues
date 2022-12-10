@@ -16,7 +16,7 @@ int maxsize;
 
 void MaxSize()
 {
-    printf("Enter Maximum Size for Stack\n");
+    printf("Enter Maximum Size for queue\n");
     scanf("%d", &maxsize);
 }
 
